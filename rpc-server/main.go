@@ -15,9 +15,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	svr := rpc.NewServer(new(IMServiceImpl), server.WithRegistry(r), server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
-		ServiceName: "demo.rpc.server",
-	}))
+	imSvc := new(IMServiceImpl)
+	imSvc.db = initializeDB()
+
+	svr := rpc.NewServer(imSvc, server.WithRegistry(r),
+		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
+			ServiceName: "demo.rpc.server",
+		}))
 
 	err = svr.Run()
 	if err != nil {
