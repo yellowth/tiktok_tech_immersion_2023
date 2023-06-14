@@ -14,6 +14,7 @@ in the same directory as
 
 ## 2. Send messages
 Send a `POST` request to `localhost:8080/api/send` (using Postman or curl) in this format:
+
 eg. 
 Send message "hello" from alex to ben:
 ```bash
@@ -22,9 +23,9 @@ curl -X POST 'localhost:8080/api/send?chat=ben:b&sender=alex&text=hello'
 
 ## 3. Pull messages
 Send a `GET` request to `localhost:8080/api/pull` in this format:
+
 eg. 
 Pull all messages between alex and ben:
-To retrieve all messages between alex and ben:
 ```bash
 curl 'localhost:8080/api/pull?chat=alex:ben&cursor=0&limit=10&reverse=false'
 ```
