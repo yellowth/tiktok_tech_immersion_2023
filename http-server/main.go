@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"strconv"
 	"time"
 
 	"github.com/TikTokTechImmersion/assignment_demo_2023/http-server/kitex_gen/rpc"
@@ -42,17 +43,12 @@ func main() {
 }
 
 func sendMessage(ctx context.Context, c *app.RequestContext) {
-	var req api.SendRequest
-	err := c.Bind(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, "Failed to parse request body: %v", err)
-		return
-	}
 	resp, err := cli.Send(ctx, &rpc.SendRequest{
 		Message: &rpc.Message{
-			Chat:   req.Chat,
-			Text:   req.Text,
-			Sender: req.Sender,
+			Chat:     c.Query("chat"),
+			Text:     c.Query("text"),
+			Sender:   c.Query("sender"),
+			SendTime: time.Now().Unix(),
 		},
 	})
 	if err != nil {
@@ -65,18 +61,18 @@ func sendMessage(ctx context.Context, c *app.RequestContext) {
 }
 
 func pullMessage(ctx context.Context, c *app.RequestContext) {
-	var req api.PullRequest
-	err := c.Bind(&req)
+	cursor, err := strconv.Atoi(c.Query("cursor"))
+	limit, err := strconv.Atoi(c.Query("limit"))
 	if err != nil {
 		c.String(consts.StatusBadRequest, "Failed to parse request body: %v", err)
 		return
 	}
-
+	reverse := c.Query("reverse") == "true"
 	resp, err := cli.Pull(ctx, &rpc.PullRequest{
-		Chat:    req.Chat,
-		Cursor:  req.Cursor,
-		Limit:   req.Limit,
-		Reverse: &req.Reverse,
+		Chat:    c.Query("chat"),
+		Cursor:  int64(cursor),
+		Limit:   int32(limit),
+		Reverse: &reverse,
 	})
 	if err != nil {
 		c.String(consts.StatusInternalServerError, err.Error())
