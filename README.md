@@ -28,6 +28,8 @@ To retrieve all messages between alex and ben:
 ```bash
 curl 'localhost:8080/api/pull?chat=alex:ben&cursor=0&limit=10&reverse=false'
 ```
-** cursor is the earliest epoch time of messages to retrieve, 0 by default
+** cursor is the earliest epoch to retrieve messages, 0 by default
+
 ** limit is the max number of messages to retrieve, 10 by default
+
 ** reverse decides whether messages are sorted in ascending order (earliest first)
